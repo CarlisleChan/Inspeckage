@@ -16,12 +16,15 @@ import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import mobi.acpm.inspeckage.hooks.ClipboardHook;
 import mobi.acpm.inspeckage.hooks.CryptoHook;
+import mobi.acpm.inspeckage.hooks.DebugHook;
+import mobi.acpm.inspeckage.hooks.DumpDexHook;
 import mobi.acpm.inspeckage.hooks.FileSystemHook;
 import mobi.acpm.inspeckage.hooks.FingerprintHook;
 import mobi.acpm.inspeckage.hooks.FlagSecureHook;
 import mobi.acpm.inspeckage.hooks.HashHook;
 import mobi.acpm.inspeckage.hooks.HttpHook;
 import mobi.acpm.inspeckage.hooks.IPCHook;
+import mobi.acpm.inspeckage.hooks.JustTrustMeHook;
 import mobi.acpm.inspeckage.hooks.MiscHook;
 import mobi.acpm.inspeckage.hooks.ProxyHook;
 import mobi.acpm.inspeckage.hooks.SQLiteHook;
@@ -57,7 +60,7 @@ public class Module extends XC_MethodHook implements IXposedHookLoadPackage, IXp
 
     @Override
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
-
+        DebugHook.initAllHooks(loadPackageParam);
         sPrefs.reload();
 
         //check if this module is enable
@@ -133,6 +136,7 @@ public class Module extends XC_MethodHook implements IXposedHookLoadPackage, IXp
                 });
 
         UIHook.initAllHooks(loadPackageParam);
+        DumpDexHook.initAllHooks(loadPackageParam);
 
         if(sPrefs.getBoolean(Config.SP_TAB_ENABLE_HTTP,true)) {
             HttpHook.initAllHooks(loadPackageParam);
@@ -165,6 +169,7 @@ public class Module extends XC_MethodHook implements IXposedHookLoadPackage, IXp
             SQLiteHook.initAllHooks(loadPackageParam);
         }
         SSLPinningHook.initAllHooks(loadPackageParam);// --
+        JustTrustMeHook.initAllHooks(loadPackageParam);
         if(sPrefs.getBoolean(Config.SP_TAB_ENABLE_SERIALIZATION,true)) {
             SerializationHook.initAllHooks(loadPackageParam);
         }
